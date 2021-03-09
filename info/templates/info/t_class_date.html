@@ -1,0 +1,59 @@
+{% extends 'info/base.html' %}
+
+{% block content %}
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="border-bottom title-part-padding">
+            <h4 class="card-title mb-0">Attendance of {{ ass.class_id }}</h4>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="card-body">
+              From: <input type="date" name="from_date">
+              To: <input type="date" name="to_date">
+              <input type="submit" value="Search">
+              <br><br>
+              Attendance from <b>{{from_date}}</b> to <b>{{to_date}}</b><br><br>
+              <div class="table-responsive">
+                <table id="scroll_hor" class="table table-bordered display nowrap" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for a in att_list %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ a.date }}</td>
+                      {% if a.status == 0 %}
+                      <td class="p-3 mb-2 bg-danger text-white">Not Marked</td>
+                      <td>
+                        <a class="btn btn-primary" href="{% url 't_attendance' a.id %}" role="button">Enter Attendance</a>
+                        <a class="btn btn-warning" href="{% url 'cancel_class' a.id %}">Cancel Class</a>
+                      </td>
+                      {% elif a.status == 1 %}
+                      <td class="p-3 mb-2 bg-success text-white">Marked</td>
+                      <td><a class="btn btn-secondary" href="{% url 'edit_att' a.id %}" role="button">Edit Attendance</a> </td>
+                      {% else %}
+                      <td class="p-3 mb-2 bg-warning text-white">Cancelled</td>
+                      <td><a class="btn btn-primary" href="{% url 't_attendance' a.id %}" role="button">Enter Attendance</a></td>
+                      {% endif %}
+                    </tr>
+                    {% empty %}
+                      <p>student has no courses</p>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
